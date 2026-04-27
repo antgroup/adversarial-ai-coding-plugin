@@ -1,11 +1,17 @@
 {
   "name": "adversarial-ai-coding-plugin",
+  "owner": {
+    "name": "antgroup"
+  },
   "plugins": [
     {
       "name": "adversarial-ai-coding",
       "source": "./plugin",
       "description": "左右互搏，攻防一体 — 让 AI 写出安全的代码",
       "version": "1.0.0",
+      "author": {
+        "name": "antgroup"
+      },
       "keywords": ["security", "code", "enhance", "vulnerability"],
       "category": "code-security"
     }
