@@ -1,0 +1,10 @@
+.idea/
+.claude
+.vscode
+plugin/.venv
+debug.sh
+README_tmp.md
+test.sh
+todo.txt
+CLAUDE.md
+.DS_Store
