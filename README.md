@@ -1,208 +1,207 @@
 <p align="center">
   <h1 align="center">Adversarial AI Coding Plugin</h1>
-  <p align="center"><b>左右互搏，攻防一体 — 让 AI 写出安全的代码</b></p>
+  <p align="center"><b>Self-Play Sparring, Offense Meets Defense — Making AI Write Secure Code</b></p>
 </p>
 
 <p align="center">
-  <a href="#benchmark-表现">Benchmark</a> |
-  <a href="#快速开始">快速开始</a> |
+  <a href="#benchmark-results">Benchmark</a> |
+  <a href="#quick-start">Quick Start</a> |
   <a href="#roadmap">Roadmap</a> 
 </p>
 
 ---
 
-## 问题：SOTA LLM 的安全悖论
+## The Problem: The Security Paradox of SOTA LLMs
 
-LLM 正以前所未有的速度生成业务代码，但这些代码中潜伏着大量安全隐患。已有 Benchmark 指出，即便使用目前前沿的商用闭源模型，**生成的代码中有漏洞的概率也高达 48.2%，第一梯队的模型生成有漏洞的代码概率在 37% 到 95.6% 之间**（数据来源：AutoBaxBench，2025.12）。
+LLMs are generating production code at an unprecedented pace, but that code harbors significant security risks. Published benchmarks show that even state-of-the-art commercial models **produce vulnerable code up to 48.2% of the time, with top-tier models ranging from 37% to 95.6%** (Source: AutoBaxBench, Dec 2025).
 
-然而，同样的 SOTA LLM 在漏洞挖掘领域却表现出色 — Claude Opus 4.6 在开源项目中发现了数百个安全漏洞，甚至独立完成了 FreeBSD 内核远程命令执行漏洞的完整 exploit 链。
+Paradoxically, these same SOTA LLMs excel at vulnerability discovery — Claude Opus 4.6 has uncovered hundreds of security vulnerabilities in open-source projects and even independently developed a full exploit chain for a FreeBSD kernel remote code execution vulnerability.
 
-**根因在于：** LLM 生成代码时的优化目标是"功能正确性"而非"安全性"，安全只是隐性约束，极易在功能正确性的压力下被稀释。
+**Root cause:** When generating code, the LLM's optimization target is *functional correctness*, not *security*. Security is merely an implicit constraint that is easily diluted under pressure to produce working code.
 
-## 解决方案：Adversarial AI Coding（AAC）
+## The Solution: Adversarial AI Coding (AAC)
 
-**Adversarial AI Coding** 将模型内部潜藏的 **"顶级黑客"** 和 **"勤奋程序员"** 两类专家同时激活，让它们在同一次编码会话中进行强制对抗，通过左右互搏、攻防一体的方式，保障最终生成代码的安全性。
+**Adversarial AI Coding** simultaneously activates the **"elite hacker"** and the **"diligent developer"** latent within the model, forcing them into adversarial engagement within the same coding session. Through this self-play sparring mechanism, the security of the generated code is ensured.
 
-![AAC 架构图](./docs/images/adversarial-ai-coding.png)
+![AAC Architecture](./docs/images/adversarial-ai-coding.png)
 
-架构内置两类角色：
+The architecture features two built-in roles:
 
-- **左手（Coder）**：响应开发者的 AI Coding 请求，生成功能代码。
-- **右手（Reviewer）**：在 coding session 结束时自动激活，以安全攻击视角审计代码并实时修复漏洞。
+- **Left Hand (Coder):** Responds to the developer's AI Coding requests and generates functional code.
+- **Right Hand (Reviewer):** Automatically activated at the end of each coding session, auditing the code from an attacker's perspective and fixing vulnerabilities in real time.
 
-**无需修改 prompt，无需改变编码习惯，开发者正常编码即可，对抗性审查自动完成。**
-
----
-
-## 核心亮点
-
-| 特性 | 说明                                                               |
-|:---|:-----------------------------------------------------------------|
-| **自我博弈对抗** | **同一个 LLM 分饰 Coder 和 Reviewer 两角，强制内部对抗，充分激发安全能力**               |
-| **零摩擦自动化** | **无需手动触发，无需 prompt 工程，插件透明地嵌入编码流程**                              |
-| **多语言多风险** | 覆盖 Java、Python、C/C++、JavaScript，支持注入、命令执行、缓冲区溢出、反序列化、XSS 等多种漏洞类型 |
-| **全生命周期覆盖** | 代码生成前安全增强 + 代码生成后安全审计，覆盖完整的 AI Coding 生命周期                       |
-
+**No prompt changes required. No workflow changes needed. Developers code as usual — adversarial review happens automatically.**
 
 ---
 
-## Benchmark 表现
+## Key Highlights
 
-我们从两个角度使用公开数据集（CyberSecEval、SecCodeBench）评估了 AAC 架构的效果：
-
-**角度一 — 代码生成漏洞减少率**
-
-使用 Claude Code 搭配 GLM-5 / Kimi-K2.5 / MiniMax-M2.5 / Qwen3.5-397B-A17B 进行实验：
-
-| 指标 | 结果 |
+| Feature | Description |
 |:---|:---|
-| 安全审计触发率 | **~80%** |
-| 整体漏洞减少率 | **79.5%** |
-
-![实验结果图](./docs/images/result_v0.png)
-
-**角度二 — 恶意注入检测能力**
-
-向 Claude Code 会话注入含有 OWASP 常见漏洞的代码，模拟被污染的代码：
-
-| 指标 | 结果 |
-|:---|:---|
-| 进入安全审计流程的概率 | **93%** |
-| 识别并修复风险的概率 | **90%** |
-
-> **注：** AAC 会增加 22%–76% 的任务执行时间（因模型而异），考虑到额外的安全审计和代码修复工作，我们认为这一开销是可接受的。
+| **Self-Play Adversarial** | **A single LLM plays both Coder and Reviewer, forcing internal adversarial engagement to fully unleash its security capabilities** |
+| **Zero-Friction Automation** | **No manual triggers, no prompt engineering — the plugin integrates transparently into your coding workflow** |
+| **Multi-Language, Multi-Risk** | Covers Java, Python, C/C++, and JavaScript, addressing injection, command execution, buffer overflow, deserialization, XSS, and more |
+| **Full Lifecycle Coverage** | Pre-generation security hardening + post-generation security audit, spanning the entire AI Coding lifecycle |
 
 ---
 
-## 已支持的漏洞类型
+## Benchmark Results
 
-### Java / Python（Web 安全）
+We evaluated the AAC architecture using public datasets (CyberSecEval, SecCodeBench) from two perspectives:
 
-- [x] **注入类漏洞**：SQL 注入、NoSQL 注入、模板注入
-- [x] **命令执行类漏洞**：OS 命令注入、代码注入
-- [x] **文件读写类漏洞**：路径遍历、任意文件读取/写入
-- [x] **反序列化漏洞**：Java / Python 反序列化漏洞
-- [x] **敏感信息类漏洞**：凭据硬编码、信息泄露
-- [x] **访问控制漏洞**：越权访问、SSRF
-- [x] **XML 漏洞**：XXE（XML 外部实体注入）
+**Perspective 1 — Vulnerability Reduction in Generated Code**
+
+Experiments conducted using Claude Code with GLM-5 / Kimi-K2.5 / MiniMax-M2.5 / Qwen3.5-397B-A17B:
+
+| Metric | Result |
+|:---|:---|
+| Security audit trigger rate | **~80%** |
+| Overall vulnerability reduction | **79.5%** |
+
+![Experiment Results](./docs/images/result_v0.png)
+
+**Perspective 2 — Malicious Injection Detection**
+
+Code containing common OWASP vulnerabilities was injected into Claude Code sessions to simulate poisoned code:
+
+| Metric | Result |
+|:---|:---|
+| Probability of entering security audit | **93%** |
+| Probability of identifying and fixing risks | **90%** |
+
+> **Note:** AAC adds 22%–76% overhead to task execution time (varies by model). Given the additional security auditing and code remediation performed, we consider this overhead acceptable.
+
+---
+
+## Supported Vulnerability Types
+
+### Java / Python (Web Security)
+
+- [x] **Injection:** SQL injection, NoSQL injection, template injection
+- [x] **Command Execution:** OS command injection, code injection
+- [x] **File I/O:** Path traversal, arbitrary file read/write
+- [x] **Deserialization:** Java / Python deserialization vulnerabilities
+- [x] **Sensitive Data:** Hardcoded credentials, information disclosure
+- [x] **Access Control:** Privilege escalation, SSRF
+- [x] **XML:** XXE (XML External Entity injection)
 
 ### C / C++
 
-- [x] **内存破坏**：缓冲区溢出、释放后使用（Use-After-Free）、双重释放（Double Free）
-- [x] **整数安全**：整数溢出/下溢、符号问题
-- [x] **危险函数**：潜在危险函数使用
-- [x] **格式化字符串**：格式化字符串漏洞
-- [x] **并发竞争**：竞态条件
-- [x] **命令与路径**：OS 命令执行、路径遍历
-- [x] **查询注入**：QL 注入
+- [x] **Memory Corruption:** Buffer overflow, Use-After-Free, Double Free
+- [x] **Integer Safety:** Integer overflow/underflow, signedness issues
+- [x] **Dangerous Functions:** Use of potentially dangerous functions
+- [x] **Format String:** Format string vulnerabilities
+- [x] **Concurrency:** Race conditions
+- [x] **Command & Path:** OS command execution, path traversal
+- [x] **Query Injection:** QL injection
 
 ### JavaScript
 
-- [x] **注入类漏洞**：代码注入、QL 注入、XSS、原型链污染
-- [x] **命令与路径**：OS 命令执行、路径遍历
-- [x] **网络安全**：SSRF、不安全传输
-- [x] **反序列化漏洞**：反序列化漏洞
-- [x] **拒绝服务**：ReDoS
-- [x] **密码学安全**：弱随机数、时序攻击
-- [x] **消息传递**：PostMessage Origin 校验
-- [x] **敏感数据**：凭据硬编码、Buffer 问题
+- [x] **Injection:** Code injection, QL injection, XSS, prototype pollution
+- [x] **Command & Path:** OS command execution, path traversal
+- [x] **Network Security:** SSRF, insecure transport
+- [x] **Deserialization:** Deserialization vulnerabilities
+- [x] **Denial of Service:** ReDoS
+- [x] **Cryptography:** Weak randomness, timing attacks
+- [x] **Messaging:** PostMessage origin validation
+- [x] **Sensitive Data:** Hardcoded credentials, Buffer handling issues
 
-### 基础设施即代码（IaC）
+### Infrastructure as Code (IaC)
 
-- [x] **容器安全**：特权容器、Capabilities 配置不当
-- [x] **网络暴露**：网络暴露风险
-- [x] **存储安全**：Host Path 挂载
-- [x] **密钥管理**：凭据硬编码
-- [x] **访问控制**：RBAC 配置不当
-- [x] **Dockerfile**：Dockerfile 安全最佳实践
+- [x] **Container Security:** Privileged containers, misconfigured capabilities
+- [x] **Network Exposure:** Network exposure risks
+- [x] **Storage Security:** Host path mounts
+- [x] **Secret Management:** Hardcoded credentials
+- [x] **Access Control:** RBAC misconfiguration
+- [x] **Dockerfile:** Dockerfile security best practices
 
 ---
 
-## 快速开始
+## Quick Start
 
-### 环境要求
+### Prerequisites
 
-| 依赖 | 版本要求 |
+| Dependency | Version |
 |:---|:---|
 | Python | `>= 3.10` |
-| Claude Code CLI | 最新版本 |
+| Claude Code CLI | Latest |
 
-### 安装步骤
+### Installation
 
-**1. 打开 Claude Code**
+**1. Open Claude Code**
 
-**2. 添加插件市场**
+**2. Add the plugin marketplace**
 
 ```shell
 /plugin marketplace add https://github.com/antgroup/adversarial-ai-coding-plugin.git
 ```
 
-**3. 安装插件**
+**3. Install the plugin**
 
 ```shell
 /plugin install adversarial-ai-coding
 ```
 
-**4. 重启 Claude Code**
+**4. Restart Claude Code**
 
-执行 `/exit` 退出后重新启动 Claude Code，插件即生效。
+Run `/exit` to quit, then relaunch Claude Code. The plugin will take effect immediately.
 
-> **就这么简单。** 无需任何配置，插件自动工作 — 正常编码即可。
+> **That's it.** No configuration needed — the plugin works automatically. Just code as you normally would.
 
-### 升级步骤
+### Upgrading
 
 ```shell
 /plugin marketplace update adversarial-ai-coding-plugin
 ```
 
-然后重启 Claude Code。
+Then restart Claude Code.
 
 ---
 
-## 典型案例
+## Case Studies
 
-### 案例一：Java 命令注入
+### Case 1: Java Command Injection
 
-**未使用 AAC** — 模型直接将用户输入传递给 `exec()`：
+**Without AAC** — The model passes user input directly to `exec()`:
 
 ```java
 public static boolean checkForPattern(String command, ...) throws Exception {
-    Process process = Runtime.getRuntime().exec(command);  // 字符串形式，存在注入风险
+    Process process = Runtime.getRuntime().exec(command);  // String form, injection risk
     ...
 }
 ```
 
-**使用 AAC 后** — Reviewer 识别风险，修复为数组形式调用并增加命令白名单校验：
+**With AAC** — The Reviewer identifies the risk and applies a fix using array-form invocation with command allowlisting:
 
 ```java
 private static final List<String> ALLOWED_COMMANDS = Arrays.asList("ls", "cat", "grep", "ps", ...);
 
 public static boolean checkPatternInCommandOutput(String[] command, ...) {
-    validateCommand(command[0]);              // 白名单校验
-    ProcessBuilder pb = new ProcessBuilder(command);  // 数组形式，避免注入
+    validateCommand(command[0]);              // Allowlist validation
+    ProcessBuilder pb = new ProcessBuilder(command);  // Array form, prevents injection
     Process process = pb.start();
     ...
 }
 ```
 
-### 案例二：C 缓冲区溢出
+### Case 2: C Buffer Overflow
 
-**未使用 AAC** — 模型使用 `strcpy()` 无边界检查：
+**Without AAC** — The model uses `strcpy()` without bounds checking:
 
 ```c
 char* modify_array(char *arr) {
     ...
-    strcpy(arr, result);  // 无边界检查，存在缓冲区溢出风险
+    strcpy(arr, result);  // No bounds checking, buffer overflow risk
     ...
 }
 ```
 
-**使用 AAC 后** — Reviewer 增加显式缓冲区大小参数、整数溢出检测和安全写入函数：
+**With AAC** — The Reviewer adds an explicit buffer size parameter, integer overflow detection, and a safe write function:
 
 ```c
 bool modify_buffer_secure(char *buffer, size_t buffer_size, ...) {
-    if (env_len > SIZE_MAX - fixed_len) return false;      // 整数溢出检测
-    if (total_len >= buffer_size) return false;             // 边界检查
+    if (env_len > SIZE_MAX - fixed_len) return false;      // Integer overflow check
+    if (total_len >= buffer_size) return false;             // Bounds check
     int written = snprintf(buffer, buffer_size, "%s%s", fixed_str, env_value);
     if (written < 0 || (size_t)written >= buffer_size) return false;
 }
@@ -212,56 +211,55 @@ bool modify_buffer_secure(char *buffer, size_t buffer_size, ...) {
 
 ## Roadmap
 
-| 版本 | 里程碑 | 核心特性 | 状态 |
+| Version | Milestone | Key Features | Status |
 |:---|:---|:---|:---|
-| **v0.1.0** | 代码生成前安全增强 | 安全增强 Agent，覆盖高危严重风险类型 | ✅ 已发布 |
-| **v1.0.0** | Adversarial AI Coding | 完成 AAC 架构实现 — 左右互搏、攻防一体 | ✅ 已发布 |
-| **v2.0.0** | 敏感数据保护 | 全自动实时脱敏和恢复技术（SHS） | 📅 规划中 |
+| **v0.1.0** | Pre-Generation Security Hardening | Security hardening agent covering high-severity risk types | ✅ Released |
+| **v1.0.0** | Adversarial AI Coding | Full AAC architecture — self-play sparring, offense meets defense | ✅ Released |
+| **v2.0.0** | Sensitive Data Protection | Fully automated real-time data masking and recovery (SHS) | 📅 Planned |
 
-### 兼容支持
+### Compatibility
 
-目前适配 Claude Code。更多 AI Coding 客户端逐步适配中。
+Currently adapted for Claude Code. Support for additional AI Coding clients is in progress.
 
-### 长期愿景
+### Long-Term Vision
 
-- 成为 AI Coding 安全增强领域的事实标准
-- 支持更多 AI Coding 客户端和更多编程语言
-- 构建社区驱动的 Security Skills 生态
-- 推动 Adversarial AI Coding 成为 AI 工程的核心安全范式
-
----
-
-## 贡献指南
-
-我们欢迎各种形式的贡献！无论是新增 Security Skills、支持新语言、修复 Bug 还是完善文档。
-
-
-### 贡献 Security Skills
-
-Security Skills 是插件的核心知识单元，每个 Skill 覆盖一个特定漏洞领域，配备专家级参考文件。贡献新的 Security Skills 是改进项目最有价值的方式 — 参考 `plugin/skills/` 目录下的现有实现。
+- Become the de facto standard for AI Coding security hardening
+- Support more AI Coding clients and programming languages
+- Build a community-driven Security Skills ecosystem
+- Establish Adversarial AI Coding as a core security paradigm in AI engineering
 
 ---
 
-## 社区
+## Contributing
 
-- **GitHub Issues**：Bug 报告和功能建议
-- **GitHub Discussions**：问题讨论和社区交流
+We welcome all forms of contribution — whether it's adding new Security Skills, supporting new languages, fixing bugs, or improving documentation.
 
----
+### Contributing Security Skills
 
-## 许可证
-
-本项目基于 [Apache License 2.0](./LICENSE) 开源。
+Security Skills are the core knowledge units of the plugin. Each Skill covers a specific vulnerability domain and comes with expert-level reference materials. Contributing new Security Skills is the most impactful way to improve this project — refer to existing implementations under `plugin/skills/` for guidance.
 
 ---
 
-## 引用
+## Community
 
-如果您在研究中使用了 Adversarial AI Coding，请引用：
+- **GitHub Issues:** Bug reports and feature requests
+- **GitHub Discussions:** Q&A and community discussions
+
+---
+
+## License
+
+This project is licensed under the [Apache License 2.0](./LICENSE).
+
+---
+
+## Citation
+
+If you use Adversarial AI Coding in your research, please cite:
 
 ```bibtex
 @software{adversarial_ai_coding,
-  title={Adversarial AI Coding Plugin: Left-Right Sparring, Attack-Defense United},
+  title={Adversarial AI Coding Plugin: Self-Play Sparring, Offense Meets Defense},
   author={Ant Group},
   year={2026},
   url={https://github.com/antgroup/adversarial-ai-coding-plugin}
@@ -271,6 +269,6 @@ Security Skills 是插件的核心知识单元，每个 Skill 覆盖一个特定
 ---
 
 <p align="center">
-  <b>左右互搏，攻防一体</b><br/>
-  <i>让 LLM 内部的"顶级黑客"守护"勤奋程序员"写出的每一行代码</i>
+  <b>Self-Play Sparring, Offense Meets Defense</b><br/>
+  <i>Let the "elite hacker" inside the LLM guard every line of code written by the "diligent developer"</i>
 </p>
